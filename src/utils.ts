@@ -170,6 +170,7 @@ export const injectGoogleReCaptchaScript = ({
     useRecaptchaNet,
     provider,
   });
+  console.log('googleRecaptchaSrc', googleRecaptchaSrc);
   const js = document.createElement('script');
   js.id = scriptId;
   js.src = `${googleRecaptchaSrc}?render=${render}${
