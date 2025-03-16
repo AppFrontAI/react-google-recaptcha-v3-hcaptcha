@@ -13,6 +13,7 @@ interface IInjectGoogleReCaptchaScriptParams {
     appendTo?: 'head' | 'body';
     id?: string;
   };
+  provider?: 'recaptcha' | 'hcaptcha';
 }
 
 /**
@@ -23,11 +24,17 @@ interface IInjectGoogleReCaptchaScriptParams {
  */
 const generateGoogleRecaptchaSrc = ({
   useRecaptchaNet,
-  useEnterprise
+  useEnterprise,
+  provider = 'recaptcha',
 }: {
   useRecaptchaNet: boolean;
   useEnterprise: boolean;
+  provider: 'recaptcha' | 'hcaptcha';
 }) => {
+  if (provider === 'hcaptcha') {
+    return 'https://js.hcaptcha.com/1/api.js';
+  }
+
   const hostName = useRecaptchaNet ? 'recaptcha.net' : 'google.com';
   const script = useEnterprise ? 'enterprise.js' : 'api.js';
 
@@ -142,8 +149,9 @@ export const injectGoogleReCaptchaScript = ({
     defer = false,
     async = false,
     id = '',
-    appendTo
-  } = {}
+    appendTo,
+  } = {},
+  provider = 'recaptcha',
 }: IInjectGoogleReCaptchaScriptParams) => {
   const scriptId = id || 'google-recaptcha-v3';
 
@@ -159,7 +167,8 @@ export const injectGoogleReCaptchaScript = ({
    */
   const googleRecaptchaSrc = generateGoogleRecaptchaSrc({
     useEnterprise,
-    useRecaptchaNet
+    useRecaptchaNet,
+    provider,
   });
   const js = document.createElement('script');
   js.id = scriptId;

@@ -19,7 +19,9 @@ enum GoogleRecaptchaError {
 
 interface IGoogleReCaptchaProviderProps {
   reCaptchaKey: string;
+  hcaptchaKey: string;
   language?: string;
+  provider?: 'recaptcha' | 'hcaptcha';
   useRecaptchaNet?: boolean;
   useEnterprise?: boolean;
   scriptProps?: {
@@ -62,6 +64,8 @@ const { Consumer: GoogleReCaptchaConsumer } = GoogleReCaptchaContext;
 
 export function GoogleReCaptchaProvider({
   reCaptchaKey,
+  hcaptchaKey,
+  provider = 'recaptcha',
   useEnterprise = false,
   useRecaptchaNet = false,
   scriptProps,
@@ -98,7 +102,7 @@ export function GoogleReCaptchaProvider({
       const params = {
         badge: 'inline',
         size: 'invisible',
-        sitekey: reCaptchaKey,
+        sitekey: provider === 'recaptcha' ? reCaptchaKey : hcaptchaKey,
         ...(container?.parameters || {})
       };
       clientId.current = grecaptcha.render(container?.element, params);
@@ -131,6 +135,7 @@ export function GoogleReCaptchaProvider({
       onLoadCallbackName,
       useEnterprise,
       useRecaptchaNet,
+      provider,
       scriptProps,
       language,
       onLoad,
